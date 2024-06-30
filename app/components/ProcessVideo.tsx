@@ -6,6 +6,7 @@ const ProcessVideo: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [result, setResult] = useState<any>(null);
+  const [requestId, setRequestId] = useState<string | null>(null);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target && event.target.files && event.target.files[0]) {
@@ -27,10 +28,11 @@ const ProcessVideo: React.FC = () => {
           }
         });
         setMessage(response.data.message);
+        setRequestId(response.data.request_id);
         console.log("Processing started:", response.data.message);
 
         // Poll for results
-        pollForResult();
+        pollForResult(response.data.request_id);
       } catch (error) {
         console.error("Error processing video:", error);
         setMessage("Error processing video");
@@ -38,12 +40,12 @@ const ProcessVideo: React.FC = () => {
     }
   };
 
-  const pollForResult = async () => {
+  const pollForResult = async (requestId: string) => {
     try {
-      const response = await axios.get("http://your-api-url/video_result");
+      const response = await axios.get(`http://your-api-url/video_result/${requestId}`);
       if (response.status === 202) {
         // Processing is still ongoing
-        setTimeout(pollForResult, 2000); // Poll every 2 seconds
+        setTimeout(() => pollForResult(requestId), 2000); // Poll every 2 seconds
       } else if (response.status === 200) {
         // Processing completed
         setResult(response.data);
@@ -59,6 +61,7 @@ const ProcessVideo: React.FC = () => {
     setSelectedFile(null);
     setMessage(null);
     setResult(null);
+    setRequestId(null);
   };
 
   return (
