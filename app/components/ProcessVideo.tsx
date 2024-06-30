@@ -4,6 +4,8 @@ import axios from "axios";
 
 const ProcessVideo: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
+  const [result, setResult] = useState<any>(null);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target && event.target.files && event.target.files[0]) {
@@ -13,15 +15,50 @@ const ProcessVideo: React.FC = () => {
     }
   };
 
-  const handleProcessVideo = () => {
+  const handleProcessVideo = async () => {
     if (selectedFile) {
-      // Add your video processing logic here
-      console.log("Processing video:", selectedFile);
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+
+      try {
+        const response = await axios.post("http://your-api-url/video_processing", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        });
+        setMessage(response.data.message);
+        console.log("Processing started:", response.data.message);
+
+        // Poll for results
+        pollForResult();
+      } catch (error) {
+        console.error("Error processing video:", error);
+        setMessage("Error processing video");
+      }
+    }
+  };
+
+  const pollForResult = async () => {
+    try {
+      const response = await axios.get("http://your-api-url/video_result");
+      if (response.status === 202) {
+        // Processing is still ongoing
+        setTimeout(pollForResult, 2000); // Poll every 2 seconds
+      } else if (response.status === 200) {
+        // Processing completed
+        setResult(response.data);
+        setMessage("Processing completed");
+      }
+    } catch (error) {
+      console.error("Error fetching result:", error);
+      setMessage("Error fetching result");
     }
   };
 
   const handleClearFile = () => {
     setSelectedFile(null);
+    setMessage(null);
+    setResult(null);
   };
 
   return (
@@ -58,6 +95,15 @@ const ProcessVideo: React.FC = () => {
               Process Video
             </button>
           </div>
+        </div>
+      )}
+      {message && (
+        <p className="mt-4 text-gray-700">{message}</p>
+      )}
+      {result && (
+        <div className="mt-4 p-4 bg-white shadow rounded-lg">
+          <h2 className="text-lg font-semibold">Result</h2>
+          <pre className="mt-2 bg-gray-100 p-2 rounded">{JSON.stringify(result, null, 2)}</pre>
         </div>
       )}
     </div>
