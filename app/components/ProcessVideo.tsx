@@ -7,6 +7,8 @@ const ProcessVideo: React.FC = () => {
   const [message, setMessage] = useState<string | null>(null);
   const [result, setResult] = useState<any>(null);
   const [requestId, setRequestId] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [savedMessage, setSavedMessage] = useState<string | null>(null);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target && event.target.files && event.target.files[0]) {
@@ -20,9 +22,10 @@ const ProcessVideo: React.FC = () => {
     if (selectedFile) {
       const formData = new FormData();
       formData.append("file", selectedFile);
+      setLoading(true);
 
       try {
-        const response = await axios.post("http://your-api-url/video_processing", formData, {
+        const response = await axios.post("http://3.84.91.206/video_processing", formData, {
           headers: {
             "Content-Type": "multipart/form-data"
           }
@@ -30,30 +33,34 @@ const ProcessVideo: React.FC = () => {
         setMessage(response.data.message);
         setRequestId(response.data.request_id);
         console.log("Processing started:", response.data.message);
-
+        console.log("Request ID:", response.data.request_id);
         // Poll for results
         pollForResult(response.data.request_id);
       } catch (error) {
         console.error("Error processing video:", error);
         setMessage("Error processing video");
+        setLoading(false);
       }
     }
   };
 
   const pollForResult = async (requestId: string) => {
     try {
-      const response = await axios.get(`http://your-api-url/video_result/${requestId}`);
+      const response = await axios.get(`http://3.84.91.206/video_result/${requestId}`);
       if (response.status === 202) {
         // Processing is still ongoing
         setTimeout(() => pollForResult(requestId), 2000); // Poll every 2 seconds
       } else if (response.status === 200) {
         // Processing completed
+        console.log(response.data)
         setResult(response.data);
         setMessage("Processing completed");
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error fetching result:", error);
       setMessage("Error fetching result");
+      setLoading(false);
     }
   };
 
@@ -62,6 +69,19 @@ const ProcessVideo: React.FC = () => {
     setMessage(null);
     setResult(null);
     setRequestId(null);
+    setLoading(false);
+    setSavedMessage(null);
+  };
+
+  const handleSaveResult = () => {
+    if (result) {
+      const storedResults = localStorage.getItem("results");
+      const resultsArray = storedResults ? JSON.parse(storedResults) : [];
+      resultsArray.push(result);
+      localStorage.setItem("results", JSON.stringify(resultsArray));
+      setSavedMessage("Result saved to local storage.");
+      handleClearFile();
+    }
   };
 
   return (
@@ -94,10 +114,17 @@ const ProcessVideo: React.FC = () => {
             <button
               onClick={handleProcessVideo}
               className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300"
+              disabled={loading}
             >
-              Process Video
+              {loading ? "Processing..." : "Process Video"}
             </button>
           </div>
+        </div>
+      )}
+      {loading && (
+        <div className="mt-4 flex justify-center items-center">
+          <div className="loader border-t-4 border-blue-500 rounded-full w-8 h-8 animate-spin"></div>
+          <p className="ml-2 text-gray-700">Processing your video...</p>
         </div>
       )}
       {message && (
@@ -106,7 +133,61 @@ const ProcessVideo: React.FC = () => {
       {result && (
         <div className="mt-4 p-4 bg-white shadow rounded-lg">
           <h2 className="text-lg font-semibold">Result</h2>
-          <pre className="mt-2 bg-gray-100 p-2 rounded">{JSON.stringify(result, null, 2)}</pre>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className={`p-4 rounded ${result.counter === 5 ? 'bg-green-100' : 'bg-gray-100'}`}>
+                <h3 className="font-medium">Counter</h3>
+                <p>{result.counter}</p>
+              </div>
+              <div className={`p-4 rounded ${result.elapsed_time < 12 ? 'bg-green-100' : 'bg-gray-100'}`}>
+                <h3 className="font-medium">Elapsed Time</h3>
+                <p>{result.elapsed_time.toFixed(2)} seconds</p>
+              </div>
+              <div className={`p-4 rounded ${result.violations.length === 0 ? 'bg-green-100' : 'bg-gray-100'}`}>
+                <h3 className="font-medium">Violations</h3>
+                {result.violations.length > 0 ? (
+                  <ul className="list-disc ml-4">
+                    {result.violations.map((violation: any, index: number) => (
+                      <li key={index}>{violation}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>No violations</p>
+                )}
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 bg-gray-100 rounded">
+                <h3 className="font-medium">Rep Durations</h3>
+                <ul className="list-disc ml-4">
+                  {result.rep_durations.map((duration: number, index: number) => (
+                    <li key={index}>{duration.toFixed(2)} seconds</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="p-4 bg-gray-100 rounded">
+                <h3 className="font-medium">Max Angles</h3>
+                <ul className="list-disc ml-4">
+                  {result.max_angles.map((angle: number, index: number) => (
+                    <li key={index}>{angle.toFixed(2)} degrees</li>
+                  ))}
+                </ul>
+              </div>
+              <div className={`p-4 rounded ${result.pass_fail === 'pass' ? 'bg-green-100' : 'bg-red-100'}`}>
+                <h3 className="font-medium">Pass/Fail</h3>
+                <p>{result.pass_fail}</p>
+              </div>
+            </div>
+          </div>
+          <button
+            onClick={handleSaveResult}
+            className="mt-4 p-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300 w-full md:w-auto"
+          >
+            Save Result to Local Storage
+          </button>
+          {savedMessage && (
+            <p className="mt-2 text-green-700">{savedMessage}</p>
+          )}
         </div>
       )}
     </div>
