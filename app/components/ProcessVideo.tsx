@@ -131,51 +131,51 @@ const ProcessVideo: React.FC = () => {
         <p className="mt-4 text-gray-700">{message}</p>
       )}
       {result && (
-        <div className="mt-4 p-4 bg-white shadow rounded-lg">
-          <h2 className="text-lg font-semibold">Result</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="mt-4 p-6 bg-white shadow rounded-lg">
+          <h2 className="text-lg font-semibold text-gray-800">Result</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className={`p-4 rounded ${result.counter === 5 ? 'bg-green-100' : 'bg-gray-100'}`}>
-                <h3 className="font-medium">Counter</h3>
-                <p>{result.counter}</p>
+                <h3 className="font-medium text-gray-800">Counter</h3>
+                <p className="text-gray-700">{result.counter}</p>
               </div>
               <div className={`p-4 rounded ${result.elapsed_time < 12 ? 'bg-green-100' : 'bg-gray-100'}`}>
-                <h3 className="font-medium">Elapsed Time</h3>
-                <p>{result.elapsed_time.toFixed(2)} seconds</p>
+                <h3 className="font-medium text-gray-800">Elapsed Time</h3>
+                <p className="text-gray-700">{result.elapsed_time.toFixed(2)} seconds</p>
               </div>
               <div className={`p-4 rounded ${result.violations.length === 0 ? 'bg-green-100' : 'bg-gray-100'}`}>
-                <h3 className="font-medium">Violations</h3>
+                <h3 className="font-medium text-gray-800">Violations</h3>
                 {result.violations.length > 0 ? (
-                  <ul className="list-disc ml-4">
+                  <ul className="list-disc ml-4 text-gray-700">
                     {result.violations.map((violation: any, index: number) => (
                       <li key={index}>{violation}</li>
                     ))}
                   </ul>
                 ) : (
-                  <p>No violations</p>
+                  <p className="text-gray-700">No violations</p>
                 )}
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-4 bg-gray-100 rounded">
-                <h3 className="font-medium">Rep Durations</h3>
-                <ul className="list-disc ml-4">
+                <h3 className="font-medium text-gray-800">Rep Durations</h3>
+                <ul className="list-disc ml-4 text-gray-700">
                   {result.rep_durations.map((duration: number, index: number) => (
                     <li key={index}>{duration.toFixed(2)} seconds</li>
                   ))}
                 </ul>
               </div>
               <div className="p-4 bg-gray-100 rounded">
-                <h3 className="font-medium">Max Angles</h3>
-                <ul className="list-disc ml-4">
+                <h3 className="font-medium text-gray-800">Max Angles</h3>
+                <ul className="list-disc ml-4 text-gray-700">
                   {result.max_angles.map((angle: number, index: number) => (
                     <li key={index}>{angle.toFixed(2)} degrees</li>
                   ))}
                 </ul>
               </div>
               <div className={`p-4 rounded ${result.pass_fail === 'pass' ? 'bg-green-100' : 'bg-red-100'}`}>
-                <h3 className="font-medium">Pass/Fail</h3>
-                <p>{result.pass_fail}</p>
+                <h3 className="font-medium text-gray-800">Pass/Fail</h3>
+                <p className="text-gray-700">{result.pass_fail}</p>
               </div>
             </div>
           </div>
