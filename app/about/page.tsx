@@ -1,7 +1,12 @@
 'use client';
 import { motion } from "framer-motion";
 
-const TestCard = ({ title, description }) => (
+type TestTypeProps = {
+  title: string;
+  description: string;
+};
+
+const TestCard = ({ title, description }: TestTypeProps) => (
   <div className="bg-gray-100 p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
     <h2 className="text-xl font-semibold mb-4">{title}</h2>
     <div className="w-full h-48 mb-4 bg-gray-300 rounded-lg flex items-center justify-center">
