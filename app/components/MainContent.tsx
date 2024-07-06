@@ -1,6 +1,6 @@
 "use client";
-import ProcessVideo from "@/app/components/ProcessVideo";
-import Results from "@/app/components/Results";
+import ProcessVideo from "@components/ProcessVideo";
+import Results from "@components/Results";
 import { motion } from "framer-motion";
 // This is Home Page
 const MainContent = () => {

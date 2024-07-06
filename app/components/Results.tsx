@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useDeferredValue } from "react";
-import Modal from "./Modal";
+import Modal from "@components/Modal";
 
 type ResultType = {
   id: number;
