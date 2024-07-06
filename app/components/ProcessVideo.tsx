@@ -25,7 +25,7 @@ const ProcessVideo: React.FC = () => {
       setLoading(true);
 
       try {
-        const response = await axios.post("http://3.84.91.206/video_processing", formData, {
+        const response = await axios.post("http://3.84.91.206/api/video_processing", formData, {
           headers: {
             "Content-Type": "multipart/form-data"
           }
@@ -46,7 +46,7 @@ const ProcessVideo: React.FC = () => {
 
   const pollForResult = async (requestId: string) => {
     try {
-      const response = await axios.get(`http://3.84.91.206/video_result/${requestId}`);
+      const response = await axios.get(`http://3.84.91.206/api/video_result/${requestId}`);
       if (response.status === 202) {
         // Processing is still ongoing
         setTimeout(() => pollForResult(requestId), 2000); // Poll every 2 seconds
