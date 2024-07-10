@@ -62,12 +62,12 @@ const Results = () => {
               }`}
               onClick={() => handleShowResult(result)}
             >
-              <h3 className="text-lg font-bold text-gray-800">{result.type}</h3>
-              <p className="text-gray-600">{result.date}</p>
+              <h3 className="text-lg font-bold text-primary">{result.type}</h3>
+              <p className="text-secondary">{result.date}</p>
             </div>
           ))
         ) : (
-          <div className="col-span-full text-center text-gray-500">
+          <div className="col-span-full text-center text-secondary">
             No results found.
           </div>
         )}
@@ -75,29 +75,29 @@ const Results = () => {
       <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
         {selectedResult && (
           <div className="p-6">
-            <h2 className="text-2xl font-bold mb-4 text-gray-800">{selectedResult.type}</h2>
+            <h2 className="text-2xl font-bold mb-4 text-primary">{selectedResult.type}</h2>
             <div className="flex flex-wrap -mx-2">
               <div className="w-full md:w-1/2 px-2 mb-4">
-                <p className="text-gray-700"><strong>Date:</strong> {selectedResult.date}</p>
-                <p className="text-gray-700"><strong>Pass/Fail:</strong> {selectedResult.pass_fail}</p>
-                <p className="text-gray-700"><strong>Counter:</strong> {selectedResult.counter}</p>
-                <p className="text-gray-700"><strong>Elapsed Time:</strong> {selectedResult.elapsed_time.toFixed(2)} seconds</p>
+                <p className="text-secondary"><strong>Date:</strong> {selectedResult.date}</p>
+                <p className="text-secondary"><strong>Pass/Fail:</strong> {selectedResult.pass_fail}</p>
+                <p className="text-secondary"><strong>Counter:</strong> {selectedResult.counter}</p>
+                <p className="text-secondary"><strong>Elapsed Time:</strong> {selectedResult.elapsed_time.toFixed(2)} seconds</p>
               </div>
               <div className="w-full md:w-1/2 px-2 mb-4">
-                <p className="text-gray-700"><strong>Rep Durations:</strong></p>
-                <ul className="list-disc list-inside text-gray-700">
+                <p className="text-secondary"><strong>Rep Durations:</strong></p>
+                <ul className="list-disc list-inside text-secondary">
                   {selectedResult.rep_durations.map((duration, index) => (
                     <li key={index}>{duration.toFixed(2)} seconds</li>
                   ))}
                 </ul>
-                <p className="text-gray-700"><strong>Max Angles:</strong></p>
-                <ul className="list-disc list-inside text-gray-700">
+                <p className="text-secondary"><strong>Max Angles:</strong></p>
+                <ul className="list-disc list-inside text-secondary">
                   {selectedResult.max_angles.map((angle, index) => (
                     <li key={index}>{angle.toFixed(2)}°</li>
                   ))}
                 </ul>
-                <p className="text-gray-700"><strong>Violations:</strong></p>
-                <ul className="list-disc list-inside text-gray-700">
+                <p className="text-secondary"><strong>Violations:</strong></p>
+                <ul className="list-disc list-inside text-secondary">
                   {selectedResult.violations.length > 0 ? (
                     selectedResult.violations.map((violation, index) => (
                       <li key={index}>{violation}</li>

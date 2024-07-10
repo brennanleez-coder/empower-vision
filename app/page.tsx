@@ -1,8 +1,10 @@
-import MainContent from "./components/MainContent";
-export default function Home() {
+'use client';
+import Home from '@components/Home';
+const HomePage = () => {
+  
   return (
-    <div className="">
-      <MainContent/>
-    </div>
+    <Home/>
   );
-}
+};
+
+export default HomePage;

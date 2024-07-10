@@ -25,7 +25,7 @@ const ProcessVideo: React.FC = () => {
       setLoading(true);
 
       try {
-        const response = await axios.post("http://3.84.91.206/api/video_processing", formData, {
+        const response = await axios.post("http://3.84.91.206:8080/api/video_processing", formData, {
           headers: {
             "Content-Type": "multipart/form-data"
           }
@@ -46,7 +46,7 @@ const ProcessVideo: React.FC = () => {
 
   const pollForResult = async (requestId: string) => {
     try {
-      const response = await axios.get(`http://3.84.91.206/api/video_result/${requestId}`);
+      const response = await axios.get(`http://3.84.91.206:8080/api/video_result/${requestId}`);
       if (response.status === 202) {
         // Processing is still ongoing
         setTimeout(() => pollForResult(requestId), 2000); // Poll every 2 seconds
@@ -85,35 +85,35 @@ const ProcessVideo: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto mt-8 p-6 bg-gray-50 shadow-lg rounded-lg">
+    <div className="max-w-7xl mx-auto mt-8 p-6">
       <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
         <input
           type="file"
           accept=".mp4,.mov"
           onChange={handleFileUpload}
-          className="p-4 rounded-lg w-full border border-gray-300 outline-none"
+          className="p-4 rounded-lg w-full border border-gray-300 outline-none bg-light text-primary"
         />
         <select
           id="category"
           name="category"
-          className="p-4 rounded-lg border border-gray-300 outline-none"
+          className="p-4 rounded-lg border border-gray-300 outline-none bg-light text-primary"
         >
           <option>5 Sit Stand</option>
         </select>
       </div>
       {selectedFile && (
         <div className="mt-4 flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2">
-          <p className="text-sm text-gray-700 flex-grow">Selected File: {selectedFile.name}</p>
+          <p className="text-sm text-primary flex-grow">Selected File: {selectedFile.name}</p>
           <div className="flex space-x-2">
             <button
               onClick={handleClearFile}
-              className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-300"
+              className="p-2 bg-red-500 text-light rounded-lg hover:bg-red-600 transition duration-300"
             >
               Clear File
             </button>
             <button
               onClick={handleProcessVideo}
-              className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300"
+              className="p-2 bg-primary text-light rounded-lg hover:bg-secondary transition duration-300"
               disabled={loading}
             >
               {loading ? "Processing..." : "Process Video"}
@@ -123,65 +123,65 @@ const ProcessVideo: React.FC = () => {
       )}
       {loading && (
         <div className="mt-4 flex justify-center items-center">
-          <div className="loader border-t-4 border-blue-500 rounded-full w-8 h-8 animate-spin"></div>
-          <p className="ml-2 text-gray-700">Processing your video...</p>
+          <div className="loader border-t-4 border-primary rounded-full w-8 h-8 animate-spin"></div>
+          <p className="ml-2 text-primary">Processing your video...</p>
         </div>
       )}
       {message && (
-        <p className="mt-4 text-gray-700">{message}</p>
+        <p className="mt-4 text-primary">{message}</p>
       )}
       {result && (
-        <div className="mt-4 p-6 bg-white shadow rounded-lg">
-          <h2 className="text-lg font-semibold text-gray-800">Result</h2>
+        <div className="mt-4 p-6 bg-light shadow rounded-lg">
+          <h2 className="text-lg font-semibold text-primary">Result</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className={`p-4 rounded ${result.counter === 5 ? 'bg-green-100' : 'bg-gray-100'}`}>
-                <h3 className="font-medium text-gray-800">Counter</h3>
-                <p className="text-gray-700">{result.counter}</p>
+                <h3 className="font-medium text-primary">Counter</h3>
+                <p className="text-primary">{result.counter}</p>
               </div>
               <div className={`p-4 rounded ${result.elapsed_time < 12 ? 'bg-green-100' : 'bg-gray-100'}`}>
-                <h3 className="font-medium text-gray-800">Elapsed Time</h3>
-                <p className="text-gray-700">{result.elapsed_time.toFixed(2)} seconds</p>
+                <h3 className="font-medium text-primary">Elapsed Time</h3>
+                <p className="text-primary">{result.elapsed_time.toFixed(2)} seconds</p>
               </div>
               <div className={`p-4 rounded ${result.violations.length === 0 ? 'bg-green-100' : 'bg-gray-100'}`}>
-                <h3 className="font-medium text-gray-800">Violations</h3>
+                <h3 className="font-medium text-primary">Violations</h3>
                 {result.violations.length > 0 ? (
-                  <ul className="list-disc ml-4 text-gray-700">
+                  <ul className="list-disc ml-4 text-primary">
                     {result.violations.map((violation: any, index: number) => (
                       <li key={index}>{violation}</li>
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-gray-700">No violations</p>
+                  <p className="text-primary">No violations</p>
                 )}
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-4 bg-gray-100 rounded">
-                <h3 className="font-medium text-gray-800">Rep Durations</h3>
-                <ul className="list-disc ml-4 text-gray-700">
+                <h3 className="font-medium text-primary">Rep Durations</h3>
+                <ul className="list-disc ml-4 text-primary">
                   {result.rep_durations.map((duration: number, index: number) => (
                     <li key={index}>{duration.toFixed(2)} seconds</li>
                   ))}
                 </ul>
               </div>
               <div className="p-4 bg-gray-100 rounded">
-                <h3 className="font-medium text-gray-800">Max Angles</h3>
-                <ul className="list-disc ml-4 text-gray-700">
+                <h3 className="font-medium text-primary">Max Angles</h3>
+                <ul className="list-disc ml-4 text-primary">
                   {result.max_angles.map((angle: number, index: number) => (
                     <li key={index}>{angle.toFixed(2)} degrees</li>
                   ))}
                 </ul>
               </div>
               <div className={`p-4 rounded ${result.pass_fail === 'pass' ? 'bg-green-100' : 'bg-red-100'}`}>
-                <h3 className="font-medium text-gray-800">Pass/Fail</h3>
-                <p className="text-gray-700">{result.pass_fail}</p>
+                <h3 className="font-medium text-primary">Pass/Fail</h3>
+                <p className="text-primary">{result.pass_fail}</p>
               </div>
             </div>
           </div>
           <button
             onClick={handleSaveResult}
-            className="mt-4 p-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300 w-full md:w-auto"
+            className="mt-4 p-2 bg-green-500 text-light rounded-lg hover:bg-green-600 transition duration-300 w-full md:w-auto"
           >
             Save Result to Local Storage
           </button>

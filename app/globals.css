@@ -24,3 +24,8 @@
     transform: rotate(360deg);
   }
 }
+
+
+.soft-ui {
+  box-shadow: 8px 8px 16px #d1d9e6, -8px -8px 16px #ffffff;
+}

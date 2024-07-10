@@ -5,8 +5,9 @@ import React, { useState } from 'react';
 const generateNavLinks = (className: string) => {
   const links = [
     { href: '/', label: 'Home' },
+    { href: '/tryme', label: 'Try Me' },
     { href: '/about', label: 'About' },
-    { href: '/contact', label: 'Contact' },
+    { href: '/faq', label: 'FAQ' }
   ];
 
   return links.map(link => (
@@ -26,15 +27,15 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-gray-100/90 shadow-md p-4 rounded-md">
+    <header className="bg-primary shadow-md p-4">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <div className="flex justify-start items-center">
-          <span className="text-lg font-bold text-gray-800">Empower Vision</span>
+          <span className="text-lg font-bold text-light">Empower Vision</span>
         </div>
 
         <nav className="hidden md:block">
           <ul className="flex space-x-4">
-            {generateNavLinks("text-gray-800 hover:text-gray-700 focus:outline-none")}
+            {generateNavLinks("text-light hover:text-accent focus:outline-none")}
           </ul>
         </nav>
 
@@ -42,7 +43,7 @@ const Header = () => {
         <div className="md:hidden">
           <button
             onClick={toggleMenu}
-            className="text-gray-800 focus:outline-none"
+            className="text-light focus:outline-none"
           >
             <svg
               className="w-6 h-6"
@@ -66,7 +67,7 @@ const Header = () => {
       {isMenuOpen && (
         <div className="md:hidden">
           <ul className="flex flex-col space-y-2 mt-2">
-            {generateNavLinks("text-gray-800 hover:text-gray-700 block px-4 py-2")}
+            {generateNavLinks("text-light hover:text-accent block px-4 py-2")}
           </ul>
         </div>
       )}
