@@ -16,7 +16,7 @@ const ContactCard = ({ name, title, description }: ContactCardProps) => (
   </div>
 );
 
-const Contact = () => {
+const About = () => {
   const contacts = [
     {
       name: "Brennan Lee",
@@ -64,4 +64,4 @@ const Contact = () => {
   );
 };
 
-export default Contact;
+export default About;
